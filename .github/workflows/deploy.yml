@@ -37,10 +37,10 @@ jobs:
                   echo "${{ secrets.SSHKEY }}" > deploy_key
                   chmod 600 deploy_key
                   ssh -i deploy_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
-                    if [ ! -d "/home/blury/bot/discord/ncls" ]; then
-                      git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/ncls
+                    if [ ! -d "/home/blury/bot/discord/terracraft" ]; then
+                      git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/terracraft
                     else
-                      cd /home/blury/bot/discord/ncls
+                      cd /home/blury/bot/discord/terracraft
                       git pull origin main
                     fi
                   EOF
@@ -56,6 +56,6 @@ jobs:
                   echo "${{ secrets.SSHKEY }}" > deploy_key
                   chmod 600 deploy_key
                   ssh -i deploy_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
-                    cd /home/blury/bot/discord/ncls
+                    cd /home/blury/bot/discord/terracraft
                     docker-compose -f docker-compose.yml up -d
                   EOF
