@@ -6,33 +6,46 @@ on:
             - main
 
 jobs:
-    deploy:
+    uploadFiles:
         runs-on: ubuntu-latest
 
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Docker Compose
+            - name: Clone repository on VPS
               run: |
-                  sudo apt-get install -y docker-compose
+                  ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
+                    if [ ! -d "/home/blury/bot/discord/ncls" ]; then
+                      git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/ncls
+                    else
+                      cd /home/blury/bot/discord/ncls
+                      git pull
+                    fi
+                  EOF
 
-            - name: Clone or pull repository
+    buildImageBot:
+        needs: uploadFiles
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Build Docker image
               run: |
-                  if [ ! -d "/home/blury/bot/discord/terracraft" ]; then
-                    git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/terracraft
-                  else
-                    cd /home/blury/bot/discord/terracraft
-                    git pull
-                  fi
+                  ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
+                    cd /home/blury/bot/discord/ncls
+                    docker build -f docker/Dockerfile -t discord-bot-ncls .
+                  EOF
 
-            - name: Deploy with Docker Compose
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.HOST }}
-                  username: ${{ secrets.USERNAME }}
-                  port: ${{ secrets.PORT }}
-                  key: ${{ secrets.SSHKEY }}
-                  script: |
-                      cd /home/blury/bot/discord/terracraft
-                      docker-compose down --remove-orphans
-                      docker-compose up -d
+    startDockerBot:
+        needs: buildImageBot
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Start Docker containers
+              run: |
+                  ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
+                    cd /home/blury/bot/discord/ncls
+                    docker-compose -f docker-compose.yml up -d
+                  EOF
