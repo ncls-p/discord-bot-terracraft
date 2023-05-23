@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Install Docker Compose
+              run: |
+                  sudo apt-get install -y docker-compose
+
+            - name: Clone or pull repository
+              run: |
+                  if [ ! -d "/home/blury/bot/discord/terracraft" ]; then
+                    git clone <repository_url> /home/blury/bot/discord/terracraft
+                  else
+                    cd /home/blury/bot/discord/terracraft
+                    git pull
+                  fi
+
+            - name: Deploy with Docker Compose
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  port: ${{ secrets.PORT }}
+                  key: ${{ secrets.SSHKEY }}
+                  script: |
+                      cd /home/blury/bot/discord/terracraft
+                      docker-compose down --remove-orphans
+                      docker-compose up -d

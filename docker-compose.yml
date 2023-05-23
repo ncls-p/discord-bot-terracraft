@@ -1,0 +1,10 @@
+version: '3'
+services:
+  discord-bot-ncls:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      - DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+      - OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+    restart: unless-stopped
