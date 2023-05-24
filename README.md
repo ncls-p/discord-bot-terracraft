@@ -1,10 +1,10 @@
-# Terrcraft Discord Bot
+# Terracraft Discord Bot
 
-Terrcraft Discord Bot is an open-source bot created to provide various functionalities and assist with server monitoring using the Discord.js library.
+Terracraft Discord Bot is an open-source bot created to provide various functionalities and assist with server monitoring using the Discord.js library.
 
 ## Features
 
-The Terrcraft Discord Bot offers the following features:
+The Terracraft Discord Bot offers the following features:
 
 ### Uptime Monitoring
 
@@ -25,10 +25,10 @@ The bot also includes event handling for the following events:
 
 ## Installation
 
-To install and run the Terrcraft Discord Bot, follow these steps:
+To install and run the Terracraft Discord Bot, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/terrcraft-discord-bot`
-2. Navigate to the project directory: `cd terrcraft-discord-bot`
+1. Clone the repository: `git clone git@github.com:ncls-p/discord-bot-terracraft.git`
+2. Navigate to the project directory: `cd terracraft-discord-bot`
 3. Install dependencies: `yarn` or `npm install`
 4. Set up environment variables:
    - Create a `.env` file at the root of the project.
@@ -40,7 +40,7 @@ To install and run the Terrcraft Discord Bot, follow these steps:
 
 ## Configuration
 
-The Terrcraft Discord Bot uses a `.env` file for configuration. Ensure you have set the following environment variables in the `.env` file:
+The Terracraft Discord Bot uses a `.env` file for configuration. Ensure you have set the following environment variables in the `.env` file:
 
 - `DISCORD_BOT_TOKEN`: Your Discord bot token.
 - `UPTIME_ROBOT_API_KEY`: Your Uptime Robot API key.
