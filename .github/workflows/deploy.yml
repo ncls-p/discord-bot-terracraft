@@ -1,17 +1,15 @@
 name: Deploy
 
-on:
-    push:
+on: [push]
 
 jobs:
-    deploy:
+    updateFiles:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v2
+            - uses: actions/checkout@v1
 
-            - name: Execute remote commands
+            - name: Executing remote command
               uses: appleboy/ssh-action@master
               with:
                   host: ${{ secrets.HOST }}
@@ -19,17 +17,45 @@ jobs:
                   port: ${{ secrets.PORT }}
                   key: ${{ secrets.SSHKEY }}
                   script: |
-                      # Clone or update repository
                       if [ ! -d "/home/blury/bot/discord/discord-bot-terracraft" ]; then
-                        git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/discord-bot-terracraft
+                          git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/discord-bot-terracraft
                       else
-                        cd /home/blury/bot/discord/discord-bot-terracraft && git pull
+                          cd /home/blury/bot/discord/discord-bot-terracraft && git pull
                       fi
 
-                      # Build Docker image
-                      cd /home/blury/bot/discord/discord-bot-terracraft
-                      docker build -f docker/Dockerfile -t discord-bot-terracraft .
+    buildImageBot:
+        needs: updateFiles
+        runs-on: ubuntu-latest
 
-                      # Start Docker container
-                      docker-compose down
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Executing remote command
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  port: ${{ secrets.PORT }}
+                  key: ${{ secrets.SSHKEY }}
+                  script: |
+                      cd /home/blury/bot/discord/discord-bot-terracraft &&
+                        docker build -f docker/Dockerfile -t discord-bot-terracraft .
+
+    startDockerBot:
+        needs: buildImageBot
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Executing remote command
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  port: ${{ secrets.PORT }}
+                  key: ${{ secrets.SSHKEY }}
+                  envs: DISCORD_BOT_PREFIX,DISCORD_BOT_TOKEN,OPENAI_API_KEY,DISCORD_BOT_CREATOR
+                  script: |
+                      cd /home/blury/bot/discord/discord-bot-terracraft &&
+                      docker-compose down &&
                       docker-compose up -d
