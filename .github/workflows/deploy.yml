@@ -4,7 +4,6 @@ on: push
 
 jobs:
     cleanFiles:
-        needs: uploadFiles
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
@@ -24,6 +23,7 @@ jobs:
 
     uploadFiles:
         runs-on: ubuntu-latest
+        needs: cleanFiles
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
