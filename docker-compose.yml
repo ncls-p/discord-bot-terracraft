@@ -5,6 +5,6 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     environment:
-      - DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
-      - UPTIME_ROBOT_API_KEY=${{ secrets.UPTIME_ROBOT_API_KEY }}
+      - DISCORD_BOT_TOKEN=DISCORD_BOT_TOKEN
+      - UPTIME_ROBOT_API_KEY=UPTIME_ROBOT_API_KEY
     restart: unless-stopped
