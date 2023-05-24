@@ -1,6 +1,6 @@
 version: '3'
 services:
-  discord-bot-ncls:
+  discord-bot-terracraft:
     build:
       context: .
       dockerfile: docker/dockerfile
