@@ -1,41 +1,61 @@
 name: Deploy
 
-on:
-    push:
-        branches:
-            - main
+on: [push]
 
 jobs:
     updateFiles:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v1
 
-            - name: Clone repository on VPS
-              run: |
-                  echo "${{ secrets.SSHKEY }}" > deploy_key
-                  chmod 600 deploy_key
-                  ssh -i deploy_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
-                    if [ ! -d "/home/blury/bot/discord/terracraft" ]; then
-                      git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/terracraft
-                    else
-                      cd /home/blury/bot/discord/terracraft
-                      git pull origin main
-                    fi
-                  EOF
+            - name: Executing remote command
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  port: ${{ secrets.PORT }}
+                  key: ${{ secrets.SSHKEY }}
+                  script: |
+                      if [ ! -d "/home/blury/bot/discord/discord-bot-terracraft" ]; then
+                          git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/discord-bot-terracraft
+                      else
+                          cd /home/blury/bot/discord/discord-bot-terracraft && git pull
+                      fi
 
-    startDockerCompose:
+    buildImageBot:
         needs: updateFiles
         runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
 
-            - name: Start Docker containers
-              run: |
-                  echo "${{ secrets.SSHKEY }}" > deploy_key
-                  chmod 600 deploy_key
-                  ssh -i deploy_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} << 'EOF'
-                    cd /home/blury/bot/discord/terracraft
-                    docker-compose -f docker-compose.yml up -d
-                  EOF
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Executing remote command
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  port: ${{ secrets.PORT }}
+                  key: ${{ secrets.SSHKEY }}
+                  script: |
+                      cd /home/blury/bot/discord/discord-bot-terracraft &&
+                        docker build -f docker/Dockerfile -t discord-bot-terracraft .
+
+    startDockerBot:
+        needs: buildImageBot
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Executing remote command
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  port: ${{ secrets.PORT }}
+                  key: ${{ secrets.SSHKEY }}
+                  envs: DISCORD_BOT_PREFIX,DISCORD_BOT_TOKEN,OPENAI_API_KEY,DISCORD_BOT_CREATOR
+                  script: |
+                      cd /home/blury/bot/discord/discord-bot-terracraft &&
+                      docker-compose down &&
+                      docker-compose up -d
