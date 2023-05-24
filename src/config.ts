@@ -7,7 +7,7 @@ export const config = {
     token: process.env.DISCORD_BOT_TOKEN as string,
     prefix: "*",
     creator: "Nicolas#0719",
-    version: "1.3.O",
+    version: "1.3.1",
 
     uptime: {
         api: {
@@ -22,13 +22,13 @@ export const config = {
             title: "Server Status",
             image: "https://cdn-longterm.mee6.xyz/plugins/welcome/images/1072212660499795988/228358aa7d3d06cb3c9fb5c3918e4046df4c7e721609809cf75d232aee9b7e30.png",
             message: {
-                information: "ℹ️Information: this is the status of the server.",
-                up: "UP ✅ \n",
-                down: "DOWN 🚫\n",
-                paused: "PAUSED ⏸️\n",
-                notCheckedYet: "NOT CHECKED YET 🤔\n",
-                seemsDown: "SEEMS DOWN 🤔\n",
-                unknown: "UNKNOWN ❓\n",
+                information: ":vertical_traffic_light: **Statut de l'infrastructure**",
+                up: "OUVERT :white_check_mark: \n",
+                down: "FERME:no_entry_sign:\n",
+                paused: "SUSPENDU :pause_button:\n",
+                notCheckedYet: "PAS DE VERIFICATION :thinking:\n",
+                seemsDown: "CE SERVEUR SEMBLE ETEINT :thinking:\n",
+                unknown: "INCONNU :question:\n",
             },
         },
     },
