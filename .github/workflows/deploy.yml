@@ -17,11 +17,9 @@ jobs:
                   port: ${{ secrets.PORT }}
                   key: ${{ secrets.SSHKEY }}
                   script: |
-                      echo $PATH
-                      echo $USER
-                      echo $SSH_KEY
                       if [ ! -d "/home/blury/bot/discord/discord-bot-terracraft" ]; then
-                          git clone git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/discord-bot-terracraft
+                        git clone -v git@github.com:ncls-p/discord-bot-terracraft.git /home/blury/bot/discord/discord-bot-terracraft
+
                       else
                           cd /home/blury/bot/discord/discord-bot-terracraft && git pull
                       fi
