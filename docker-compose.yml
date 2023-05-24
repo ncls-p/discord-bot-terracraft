@@ -3,8 +3,7 @@ services:
   discord-bot-ncls:
     build:
       context: .
-      dockerfile: docker/Dockerfile
-    environment:
-      - DISCORD_BOT_TOKEN=DISCORD_BOT_TOKEN
-      - UPTIME_ROBOT_API_KEY=UPTIME_ROBOT_API_KEY
+      dockerfile: docker/dockerfile
+    env_file:
+      - .env
     restart: unless-stopped

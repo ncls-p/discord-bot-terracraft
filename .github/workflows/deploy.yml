@@ -38,7 +38,7 @@ jobs:
                   source: "."
                   target: "/home/blury/bot/discord/discord-bot-terracraft"
 
-    startAndBuildDockerBot:
+    buildAndRun:
         needs: uploadFiles
         runs-on: ubuntu-latest
         env:
@@ -58,7 +58,6 @@ jobs:
                   envs: DISCORD_BOT_TOKEN,UPTIME_ROBOT_API_KEY
                   script: |
                       cd /home/blury/bot/discord/discord-bot-terracraft
-                      docker build -f docker/Dockerfile -t discord-bot-terracraft .
                       touch .env
                       echo "DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}" >> .env
                       echo "UPTIME_ROBOT_API_KEY=${UPTIME_ROBOT_API_KEY}" >> .env
