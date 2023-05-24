@@ -3,7 +3,7 @@ services:
   discord-bot-terracraft:
     build:
       context: .
-      dockerfile: docker/dockerfile
+      dockerfile: docker/Dockerfile
     env_file:
       - .env
     restart: unless-stopped
