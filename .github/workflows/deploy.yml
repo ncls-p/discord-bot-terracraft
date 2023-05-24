@@ -61,5 +61,5 @@ jobs:
                       touch .env
                       echo "DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}" >> .env
                       echo "UPTIME_ROBOT_API_KEY=${UPTIME_ROBOT_API_KEY}" >> .env
-                      docker-compose down
+                      docker-compose down --remove-orphans
                       docker-compose up -d
