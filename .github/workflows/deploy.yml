@@ -17,8 +17,8 @@ jobs:
                   port: ${{ secrets.PORT }}
                   key: ${{ secrets.SSHKEY }}
                   script: |
-                      if [ -d "/home/blury/bot/discord/discord-bot-terracraft" ]; then
-                        rm -rf /home/blury/bot/discord/discord-bot-terracraft
+                      if [ -d "/home/blury/perso/discord/discord-bot-terracraft" ]; then
+                        rm -rf /home/blury/perso/discord/discord-bot-terracraft
                       fi
 
     uploadFiles:
@@ -36,7 +36,7 @@ jobs:
                   port: ${{ secrets.PORT }}
                   key: ${{ secrets.SSHKEY }}
                   source: "."
-                  target: "/home/blury/bot/discord/discord-bot-terracraft"
+                  target: "/home/blury/perso/discord/discord-bot-terracraft"
 
     buildAndRun:
         needs: uploadFiles
@@ -57,9 +57,9 @@ jobs:
                   key: ${{ secrets.SSHKEY }}
                   envs: DISCORD_BOT_TOKEN,UPTIME_ROBOT_API_KEY
                   script: |
-                      cd /home/blury/bot/discord/discord-bot-terracraft
+                      cd /home/blury/perso/discord/discord-bot-terracraft
                       touch .env
                       echo "DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}" >> .env
                       echo "UPTIME_ROBOT_API_KEY=${UPTIME_ROBOT_API_KEY}" >> .env
-                      docker-compose down --remove-orphans
-                      docker-compose up -d
+                      docker compose down --remove-orphans
+                      docker compose up -d
